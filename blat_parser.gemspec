@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["katharinaehayer@gmail.com"]
   s.homepage    = ""
   s.summary     = %q{This is a blat parser}
-  s.description = %q{Original by Gregory R Grant, Unniversity of Pennsylvania, 2010}
+  s.description = %q{Build for runtime testing}
 
   s.rubyforge_project = "blat_parser"
 

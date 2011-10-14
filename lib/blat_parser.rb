@@ -1,5 +1,4 @@
 require "blat_parser/version"
-
-module BlatParser
-  # Your code goes here...
-end
+require "blat_parser/pre_blat"
+require "blat_parser/parser"
+require "blat_parser/combine_fasta"

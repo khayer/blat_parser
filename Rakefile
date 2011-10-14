@@ -1,9 +1,8 @@
 require "bundler/gem_tasks"
 
-require "./test/test_fasta_parser"
-	task :default => [:commands]
-
-	task :manage do
-		myTest = Unit_Test.new
-		myTest.test
-	end
+require 'rake/testtask'
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/test*.rb']
+  t.verbose = true
+end
