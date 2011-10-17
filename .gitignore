@@ -4,3 +4,5 @@ Gemfile.lock
 pkg/*
 # OS X filesystem file
 .DS_Store
+*.fa
+*.fasta

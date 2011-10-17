@@ -1,28 +1,32 @@
 module BlatParser
   class Parser
-    def initialize(line)
-      tmp = line.split(" ")
-      @matches = tmp[0]
-      @misMatches = tmp[1]
-      @repMatches = tmp[2]
-      @nCount = tmp[3]
-      @qNumInsert = tmp[4]
-      @qBaseInsert = tmp[5]
-      @tNumInsert = tmp[6]
-      @tBaseInsert = tmp[7]
-      @strand = tmp[8]
-      @qname = tmp[9]
-      @qSize = tmp[10]
-      @qStart = tmp[11]
-      @qEnd = tmp[12]
-      @tName = tmp[13]
-      @tSize = tmp[14]
-      @tStart = tmp[15]
-      @tEnd = tmp[16]
-      @blockCount = tmp[17]
-      @blockSizes = tmp[18]
-      @qStarts = tmps[19]
-      @tStarts = tmps[20]
+    include Enumerable
+    def initialize(filename = nil)
+      @unique_mapper_pos = []
+      @non_unique_mapper_pos = []
+      @current_iteration = 0
+      if filename
+        @filehandler = ::File.open(filename)
+        @list_of_lines = []
+        @list_of_header = []
+        position = @filehandler.pos
+        @filehandler.each do |line|
+          aline = line.split()
+          if aline[0] =~ /(@.)/
+            @list_of_header << position
+          else
+            @list_of_lines << position
+          end
+          position = @filehandler.pos
+        end
+
+        self.parse()
+        @current_iteration = 0
+      else
+        @filehandler = nil
+        @list_of_lines = []
+        @list_of_header = []
+      end
     end
 
     def to_s()

@@ -9,6 +9,19 @@ module BlatParser
     end
 
     def call_blat()
+      cmd = "#{@blatdir} -ooc=11.ooc -out=pslx #{@database} #{@query} #{@outputdir}"
+      a = Thread.new{system(cmd)}
+      b = Thread.new{
+        while a.alive?
+          sleep 1
+        end
+        if a.status == nil
+          raise("Blat died...")
+        end
+      }
+      a.join
+      b.join
+      File.exist?(@outputdir)
 
     end
 

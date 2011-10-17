@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'blat_parser/pre_blat'
+require "benchmark"
+
+def usage
+    msg =<<EOF
+
+----------------------- Usage -------------------------
+#{$0} blat database query output
+-------------------------------------------------------
+Calls blat with the following preset options:
+-out=pslx -ooc=11.ooc
+-------------------------------------------------------
+   blat : variable in path or the absolut path
+  query : reads in fasta format
+ output : name of the output file
+-------------------------------------------------------
+
+EOF
+
+end
+
+
+para = BlatParser::PreBlat.new(*ARGV)
+puts Benchmark.measure{t = para.call_blat()}
+if t
+  puts "File for #{ARGV[2]} in #{ARGV[3]}! "
+else
+  "SOMETHING WRONG"
+end
+
+
+
+
