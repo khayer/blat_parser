@@ -1,5 +1,6 @@
 module BlatParser
   class BlatContent
+    # .pslx files expected!
     def initialize(line)
       tmp = line.split(" ")
       @matches = tmp[0]
@@ -21,12 +22,15 @@ module BlatParser
       @tEnd = tmp[16]
       @blockCount = tmp[17]
       @blockSizes = tmp[18]
-      @qStarts = tmps[19]
-      @tStarts = tmps[20]
+      @qStarts = tmp[19]
+      @tStarts = tmp[20]
+      @seq = tmp[21]
     end
 
+    attr_accessor :qname
+
     def to_s()
-      str = @matches+"\t"+@misMatches+"\t"+@repMatches+"\t"+@nCount+"\t"+@qNumInsert+"\t"+@qBaseInsert+"\t"+@tNumInsert+"\t"+@tBaseInsert+"\t"+@strand+"\t"+@qname+"\t"+@qSize+"\t"+@qStart+"\t"+@qEnd+"\t"+@tName+"\t"+@tSize+"/t"+@tStart+"/t"+@tEnd+"/t"+@blockCount+"/t"+@blockSizes+"/t"+@qStarts+"/t"+@tStarts
+      str = @matches+"\t"+@misMatches+"\t"+@repMatches+"\t"+@nCount+"\t"+@qNumInsert+"\t"+@qBaseInsert+"\t"+@tNumInsert+"\t"+@tBaseInsert+"\t"+@strand+"\t"+@qname+"\t"+@qSize+"\t"+@qStart+"\t"+@qEnd+"\t"+@tName+"\t"+@tSize+"/t"+@tStart+"/t"+@tEnd+"/t"+@blockCount+"/t"+@blockSizes+"/t"+@qStarts+"/t"+@tStarts+"/t"+@seq
     end
 
 

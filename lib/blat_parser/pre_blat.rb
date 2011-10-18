@@ -9,7 +9,7 @@ module BlatParser
     end
 
     def call_blat()
-      cmd = "#{@blatdir} -ooc=11.ooc -out=pslx #{@database} #{@query} #{@outputdir}"
+      cmd = "#{@blatdir} -out=pslx #{@database} #{@query} #{@outputdir}"
       a = Thread.new{system(cmd)}
       b = Thread.new{
         while a.alive?
@@ -21,7 +21,7 @@ module BlatParser
       }
       a.join
       b.join
-      File.exist?(@outputdir)
+      puts File.exist?(@outputdir)
 
     end
 

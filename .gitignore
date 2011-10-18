@@ -6,3 +6,6 @@ pkg/*
 .DS_Store
 *.fa
 *.fasta
+*_R1
+*_R2
+*.pslx

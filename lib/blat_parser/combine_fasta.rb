@@ -9,9 +9,12 @@ module BlatParser
 
     end
 
+    # combines paired reads to one in a fasta file
     def parse_to_file()
       i = 0
       str_n = ""
+
+      # generating string with 50 N's
       while i<50
         str_n = "#{str_n}N"
         i += 1
@@ -19,34 +22,42 @@ module BlatParser
 
       seq1 = ""
       seq2 = ""
-      first = 1
+
+      line1 = @f1.readline().chomp
+      line2 = @f2.readline().chomp
+
+      tmp1 = line1.split(" ")
+      tmp2 = line2.split(" ")
+
+      header = "#{tmp1[0]}::#{tmp2[0]}"
 
       while !@f2.eof?()
 
-        line1 = @f1.readline().chomp
         line2 = @f2.readline().chomp
+        line1 = @f1.readline().chomp
 
-        if line1.include?('>')
-          tmp1 = line1.split(" ")
-          tmp2 = line2.split(" ")
-          if first
-            seq = ""
-            first = false
-            header = "#{tmp1[0]}::#{tmp2[0]}"
-            @out.write(header+"\n")
-          else
-            seq = seq1 + str_n + seq2
-            seq1 = ""
-            seq2 = ""
-            str = "#{seq}\n#{tmp1[0]}::#{tmp2[0]}"
-            @out.write(str+"\n")
-          end
-        else
+        unless line1.include?('>')
           seq1 = seq1 + "#{line1}"
           seq2 = seq2 + "#{line2}"
-        end
 
+        else
+
+          seq = seq1 + str_n + seq2
+          seq1 = ""
+          seq2 = ""
+          str = "#{header}\n#{seq}"
+          @out.write(str+"\n")
+
+          tmp1 = line1.split(" ")
+          tmp2 = line2.split(" ")
+
+          header = "#{tmp1[0]}::#{tmp2[0]}"
+
+        end
       end
+      @out.write(header+"\n"+seq1+str_n+seq2+"\n")
     end
+
+
   end
 end

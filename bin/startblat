@@ -21,13 +21,18 @@ EOF
 
 end
 
-
-para = BlatParser::PreBlat.new(*ARGV)
-puts Benchmark.measure{t = para.call_blat()}
-if t
-  puts "File for #{ARGV[2]} in #{ARGV[3]}! "
+if ARGV.size == 0
+  puts usage
+  exit 1
 else
-  "SOMETHING WRONG"
+
+  para = BlatParser::PreBlat.new(*ARGV)
+  puts Benchmark.measure{t = para.call_blat()}
+  if File.exist?(ARGV[3])
+    puts "File for #{ARGV[2]} in #{ARGV[3]}! "
+  else
+    "SOMETHING WRONG"
+  end
 end
 
 
