@@ -1,7 +1,7 @@
 module BlatParser
   class Parser
     include Enumerable
-    def initialize(filename = nil, outdir)
+    def initialize(filename = nil, outdir=nil)
       @unique_mapper_pos = []
       @non_unique_mapper_pos = []
       @current_iteration = 0
@@ -21,7 +21,7 @@ module BlatParser
           position = @filehandler.pos
         end
 
-        self.parse()
+        self.parse_to_file()
         @current_iteration = 0
       else
         @filehandler = nil
@@ -33,7 +33,12 @@ module BlatParser
     attr_accessor :list_of_lines, :current_iteration, :list_of_header, :unique_mapper_pos, :non_unique_mapper_pos
 
     def next()
-      @filehandler.pos = @list_of_lines[@current_iteration]
+      position = @list_of_lines[@current_iteration]
+      if position
+        @filehandler.pos = position
+      else
+        return nil
+      end
       if @list_of_lines.length >= @current_iteration
         @current_iteration += 1
       else
@@ -118,6 +123,87 @@ module BlatParser
       entries_to_s(@unique_mapper_pos)
     end
 
+
+    def parse_to_file()
+      @filehandler.pos = 0
+      #puts @filehandler.pos
+      qnames = []
+      pos = []
+
+
+      counter_non_unique = 0
+      counter_unique = 0
+      z_non_unique = File.new(@outdir+"_non_unique",'w')
+      z_unique = File.new(@outdir+"_unique", 'w')
+      out = ""
+
+      entry1 = self.next()
+      entry2 = self.next()
+
+      while entry2!=nil
+        #entry2 = self.next
+        if entry1.qname == entry2.qname
+          counter_non_unique += 1
+          out = "#{entry1.to_s()}"
+          z_non_unique.write(out+"\n")
+          while entry1.qname == entry2.qname
+            out = "#{entry2.to_s()}"
+            z_non_unique.write(out+"\n")
+            entry2 = self.next
+            if entry2 == nil
+              break
+            end
+          end
+        else
+          counter_unique += 1
+          out = "#{entry1.to_s()}"
+          z_unique.write(out+"\n")
+          entry1 = entry2
+        end
+      end
+
+      out = "#{entry1.to_s()}"
+      z_unique.write(out+"\n")
+
+
+
+
+
+
+      #while !qnames.empty?()
+#
+      #  element1 = qnames.pop()
+      #  pos1 = pos.pop()
+#
+      #  if qnames.include?(element1)
+      #    counter_non_unique += 1
+      #    position = pos1 - 1
+      #    entry = content_at(position)
+      #    out = "#{entry.to_s()}"
+      #    z.write(out+"\n")
+      #    while qnames.include?(element1)
+      #      ind = qnames.index(element1)
+      #      qnames.delete_at(ind)
+      #      pos2 = pos.delete_at(ind)
+      #      position = pos2 - 1
+      #      entry = content_at(position)
+      #      out = "#{entry.to_s()}"
+      #      z.write(out+"\n")
+      #    end
+      #  else
+      #    counter_unique += 1
+#
+      #    position = pos1 - 1
+      #    entry = content_at(position)
+      #    out = "#{entry.to_s()}"
+      #    z_unique.write(out+"\n")
+      #  end
+      #end
+      puts "Unique: #{counter_unique}    Non_unique: #{counter_non_unique}"
+      z_non_unique.close
+      z_unique.close
+    end
+
     private
     def entries_to_s(positions)
       z = File.new(@outdir,'w')
@@ -127,7 +213,7 @@ module BlatParser
           pos = pos - 1
           entry = content_at(pos)
           out = "#{entry.to_s()}"
-          z.write(out)
+          z.write(out+"\n")
       end
 
       z.close

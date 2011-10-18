@@ -58,11 +58,11 @@ else
   optparse.parse!
 
 
-  file = BlatParser::Parser.new(ARGV[0], ARGV[1])
+  puts Benchmark.measure{file = BlatParser::Parser.new(ARGV[0], ARGV[1])}
 
-  puts Benchmark.measure{
-  str = file.unique_to_s() if options[:unique]
-  str = file.non_unique_to_s() if options[:non_unique]
-  str = file.unique_to_s() + "\n@Non-unique: \n" + file.non_unique_to_s() if options[:both]
-  }
+
+  #str = file.unique_to_s() if options[:unique]
+  #str = file.non_unique_to_s() if options[:non_unique]
+  #str = file.unique_to_s() + "\n@Non-unique: \n" + file.non_unique_to_s() if options[:both]
+
 end
