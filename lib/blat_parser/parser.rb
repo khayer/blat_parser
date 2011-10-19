@@ -1,32 +1,36 @@
 module BlatParser
   class Parser
     include Enumerable
-    def initialize(filename = nil, outdir=nil)
-      @unique_mapper_pos = []
-      @non_unique_mapper_pos = []
-      @current_iteration = 0
-      @outdir = outdir
-      if filename
-        @filehandler = ::File.open(filename)
-        @list_of_lines = []
-        @list_of_header = []
-        position = @filehandler.pos
-        @filehandler.each do |line|
-          aline = line.split()
-          if !is_a_number?(aline[0])
-            @list_of_header << position
-          else
-            @list_of_lines << position
-          end
-          position = @filehandler.pos
-        end
-
-        self.parse_to_file()
-        @current_iteration = 0
+    def initialize(filename = nil, outdir=nil, no_pointers=true)
+      if no_pointers
+        self.parse_to_file_2(filename, outdir)
       else
-        @filehandler = nil
-        @list_of_lines = []
-        @list_of_header = []
+        @unique_mapper_pos = []
+        @non_unique_mapper_pos = []
+        @current_iteration = 0
+        @outdir = outdir
+        if filename
+          @filehandler = ::File.open(filename)
+          @list_of_lines = []
+          @list_of_header = []
+          position = @filehandler.pos
+          @filehandler.each do |line|
+            aline = line.split()
+            if !is_a_number?(aline[0])
+              @list_of_header << position
+            else
+              @list_of_lines << position
+            end
+            position = @filehandler.pos
+          end
+
+          self.parse_to_file()
+          @current_iteration = 0
+        else
+          @filehandler = nil
+          @list_of_lines = []
+          @list_of_header = []
+        end
       end
     end
 
@@ -50,6 +54,8 @@ module BlatParser
     def make_content()
       content = BlatParser::BlatContent.new(@filehandler.read())
     end
+
+
 
     def each
 
@@ -165,44 +171,62 @@ module BlatParser
       out = "#{entry1.to_s()}"
       z_unique.write(out+"\n")
 
-
-
-
-
-
-      #while !qnames.empty?()
-#
-      #  element1 = qnames.pop()
-      #  pos1 = pos.pop()
-#
-      #  if qnames.include?(element1)
-      #    counter_non_unique += 1
-      #    position = pos1 - 1
-      #    entry = content_at(position)
-      #    out = "#{entry.to_s()}"
-      #    z.write(out+"\n")
-      #    while qnames.include?(element1)
-      #      ind = qnames.index(element1)
-      #      qnames.delete_at(ind)
-      #      pos2 = pos.delete_at(ind)
-      #      position = pos2 - 1
-      #      entry = content_at(position)
-      #      out = "#{entry.to_s()}"
-      #      z.write(out+"\n")
-      #    end
-      #  else
-      #    counter_unique += 1
-#
-      #    position = pos1 - 1
-      #    entry = content_at(position)
-      #    out = "#{entry.to_s()}"
-      #    z_unique.write(out+"\n")
-      #  end
-      #end
       puts "Unique: #{counter_unique}    Non_unique: #{counter_non_unique}"
       z_non_unique.close
       z_unique.close
     end
+
+    def parse_to_file_2(filename, outdir)
+
+      @filehandler = File.new(filename, 'r')
+      z_unique = File.new(outdir+"_unique", 'w')
+      z_non_unique = File.new(outdir+"_non_unique", 'w')
+
+
+      while !@filehandler.eof?
+        line = @filehandle.readline()
+        aline = line.split()
+        if is_a_number?(aline[0])
+          entry1 = make_content()
+          if @filehandler.eof?()
+            break
+          else
+            @filehandler.readline()
+            entry2 = make_content()
+
+            while entry2!=nil
+              #entry2 = self.next
+              if entry1.qname == entry2.qname
+                counter_non_unique += 1
+                out = "#{entry1.to_s()}"
+                z_non_unique.write(out+"\n")
+                while entry1.qname == entry2.qname
+                  out = "#{entry2.to_s()}"
+                  z_non_unique.write(out+"\n")
+                  if !@filehandler.eof?()
+                    @filehandler.readline()
+                    entry2 = make_content()
+                  end
+                end
+              else
+                counter_unique += 1
+                out = "#{entry1.to_s()}"
+                z_unique.write(out+"\n")
+                entry1 = entry2
+              end
+            end
+          end
+        end
+      end
+      out = "#{entry1.to_s()}"
+      z_unique.write(out+"\n")
+
+      puts "Unique: #{counter_unique}    Non_unique: #{counter_non_unique}"
+      z_non_unique.close
+      z_unique.close
+    end
+
+
 
     private
     def entries_to_s(positions)
