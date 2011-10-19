@@ -22,7 +22,6 @@ module BlatParser
 
       seq1 = ""
       seq2 = ""
-<<<<<<< HEAD
 
       line1 = @f1.readline().chomp
       line2 = @f2.readline().chomp
@@ -60,32 +59,5 @@ module BlatParser
     end
 
 
-=======
-      first = 1
-
-      while !@f2.eof?()
-
-        line1 = @f1.readline().chomp
-        line2 = @f2.readline().chomp
-
-        if line1.include?('>')
-          if first
-            seq = ""
-            first = false
-            header = "#{line1}\t#{line2}"
-            @out.write(header+"\n")
-          else
-            seq = seq1 + str_n + seq2
-            str = "#{seq}\n#{line1}\t#{line2}"
-            @out.write(str+"\n")
-          end
-        else
-          seq1 = seq1 + "#{line1}"
-          seq2 = seq2 + "#{line2}"
-        end
-
-      end
-    end
->>>>>>> ?
   end
 end

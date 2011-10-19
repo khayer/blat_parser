@@ -55,6 +55,10 @@ module BlatParser
       content = BlatParser::BlatContent.new(@filehandler.read())
     end
 
+    def make_content_2(line)
+      content = BlatParser::BlatContent.new(line)
+    end
+
 
 
     def each
@@ -182,31 +186,44 @@ module BlatParser
       z_unique = File.new(outdir+"_unique", 'w')
       z_non_unique = File.new(outdir+"_non_unique", 'w')
 
+      counter_non_unique = 0
+      counter_unique = 0
+
 
       while !@filehandler.eof?
-        line = @filehandle.readline()
+        line = @filehandler.readline()
         aline = line.split()
         if is_a_number?(aline[0])
-          entry1 = make_content()
+          entry1 = make_content_2(line)
+          #puts entry1.qname
           if @filehandler.eof?()
+            counter_unique += 1
             break
           else
-            @filehandler.readline()
-            entry2 = make_content()
+            line = @filehandler.readline()
+            entry2 = make_content_2(line)
 
-            while entry2!=nil
-              #entry2 = self.next
+            while !@filehandler.eof?
+
               if entry1.qname == entry2.qname
                 counter_non_unique += 1
                 out = "#{entry1.to_s()}"
                 z_non_unique.write(out+"\n")
                 while entry1.qname == entry2.qname
+                  puts entry1.qname
                   out = "#{entry2.to_s()}"
                   z_non_unique.write(out+"\n")
                   if !@filehandler.eof?()
-                    @filehandler.readline()
-                    entry2 = make_content()
+                    line = @filehandler.readline()
+                    entry2 = make_content_2(line)
                   end
+                end
+                entry1 = entry2
+                if !@filehandler.eof?()
+                  line = @filehandler.readline()
+                  entry2 = make_content_2(line)
+                else
+                  counter_unique += 1
                 end
               else
                 counter_unique += 1

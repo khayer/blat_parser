@@ -1,2 +1,2 @@
 57	2	0	0	0	0	1	3	+	HWI-ST431:108:D03H3ACXX:3:1101:1696:1883	101	1	60	chr1	249250621/t154126036/t154126098/t2/t49,10,/t1,50,/t154126036,154126088,/tcggcctcccaaagcgctgggattacaggcgtgagccactgcgcccgacc,tgtttttatt,
-36	2	0	0	0	0	0	0	+	HWI-ST431:108:D03H3ACXX:3:1101:1534:1891	101	1	39	chr1	249250621/t9029026/t9029064/t1/t38,/t1,/t9029026,/tagatggcactactgcactccaggctgggcaacagagca,
+36	1	0	0	0	0	1	1	+	HWI-ST431:108:D03H3ACXX:3:1101:1534:1891	101	11	48	chr1	249250621/t68163013/t68163051/t2/t28,9,/t11,39,/t68163013,68163042,/tactgcactccaggctgggcaacagagca,gtctctgtc,
