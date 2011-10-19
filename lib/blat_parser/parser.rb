@@ -210,7 +210,7 @@ module BlatParser
                 out = "#{entry1.to_s()}"
                 z_non_unique.write(out+"\n")
                 while entry1.qname == entry2.qname
-                  puts entry1.qname
+
                   out = "#{entry2.to_s()}"
                   z_non_unique.write(out+"\n")
                   if !@filehandler.eof?()
