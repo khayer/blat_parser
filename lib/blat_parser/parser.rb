@@ -3,7 +3,18 @@ module BlatParser
     include Enumerable
     def initialize(filename = nil, outdir=nil, no_pointers=true)
       if no_pointers
-        self.parse_to_file_2(filename, outdir)
+        @filehandler = ::File.open(filename)
+        @outdir = outdir
+
+        line = @filehandler.readline()
+        a_line = aline = line.split()
+        while !is_a_number?(aline[0])
+          line = @filehandler.readline()
+          a_line = aline = line.split()
+        end
+
+
+        parse_to_file_2(line)
       else
         @unique_mapper_pos = []
         @non_unique_mapper_pos = []
@@ -180,7 +191,67 @@ module BlatParser
       z_unique.close
     end
 
-    def parse_to_file_2(filename, outdir)
+    def parse_to_file_2(line)
+
+      z_unique = File.new(@outdir+"_unique", 'w')
+      z_non_unique = File.new(@outdir+"_non_unique", 'w')
+
+      counter_non_unique = 0
+      counter_unique = 0
+
+
+
+      while !@filehandler.eof?
+         entry1 = make_content_2(line)
+         line = @filehandler.readline()
+         entry2 = make_content_2(line)
+
+         if entry1.qname == entry2.qname
+
+          counter_non_unique += 1
+          out = "#{entry1.to_s()}"
+          z_non_unique.write(out+"\n")
+
+          while entry1.qname == entry2.qname
+
+            out = "#{entry2.to_s()}"
+            z_non_unique.write(out+"\n")
+
+            if @filehandler.eof?
+              marker = false
+              break
+            else
+              line = @filehandler.readline()
+              entry2 = make_content_2(line)
+              marker = 1
+            end
+          end
+        else
+          counter_unique += 1
+          out = "#{entry1.to_s()}"
+          z_unique.write(out+"\n")
+          marker = false
+        end
+      end
+      if marker
+        counter_unique += 1
+        out = "#{entry2.to_s()}"
+        z_unique.write(out+"\n")
+      end
+
+      puts "Unique: #{counter_unique}    Non_unique: #{counter_non_unique}"
+      z_non_unique.close
+      z_unique.close
+
+
+
+    end
+
+
+
+
+
+    def parse_to_file_3(filename, outdir)
 
       @filehandler = File.new(filename, 'r')
       z_unique = File.new(outdir+"_unique", 'w')
@@ -198,12 +269,16 @@ module BlatParser
           #puts entry1.qname
           if @filehandler.eof?()
             counter_unique += 1
+            out = "#{entry1.to_s()}"
+            z_unique.write(out+"\n")
             break
           else
-            line = @filehandler.readline()
-            entry2 = make_content_2(line)
 
-            while !@filehandler.eof?
+
+            while entry1 != nil
+              line = @filehandler.readline()
+              entry2 = make_content_2(line)
+
 
               if entry1.qname == entry2.qname
                 counter_non_unique += 1
@@ -216,15 +291,24 @@ module BlatParser
                   if !@filehandler.eof?()
                     line = @filehandler.readline()
                     entry2 = make_content_2(line)
+                  else
+                    entry2 = nil
                   end
                 end
                 entry1 = entry2
-                if !@filehandler.eof?()
-                  line = @filehandler.readline()
-                  entry2 = make_content_2(line)
-                else
+                if @filehandler.eof?()
                   counter_unique += 1
+                  out = "#{entry1.to_s()}"
+                  z_unique.write(out+"\n")
                 end
+                  #line = @filehandler.readline()
+                  #entry2 = make_content_2(line)
+                #else
+                  #counter_unique += 1
+                #else
+                  #line = @filehandler.readline()
+                  #entry2 = make_content_2(line)
+                #end
               else
                 counter_unique += 1
                 out = "#{entry1.to_s()}"
@@ -235,8 +319,7 @@ module BlatParser
           end
         end
       end
-      out = "#{entry1.to_s()}"
-      z_unique.write(out+"\n")
+
 
       puts "Unique: #{counter_unique}    Non_unique: #{counter_non_unique}"
       z_non_unique.close

@@ -9,7 +9,7 @@ module BlatParser
     end
 
     def call_blat()
-      cmd = "#{@blatdir} -out=pslx #{@database} #{@query} #{@outputdir}"
+      cmd = "#{@blatdir}  #{@database} #{@query} #{@outputdir} -minScore=20 -minIdentity=93 -stepSize=5 -out=pslx"
       a = Thread.new{system(cmd)}
       b = Thread.new{
         while a.alive?

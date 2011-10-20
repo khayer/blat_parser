@@ -10,7 +10,7 @@ def usage
 #{$0} blat database query output
 -------------------------------------------------------
 Calls blat with the following preset options:
--out=pslx -ooc=11.ooc
+-minScore=20 -minidentity=93 -stepsize=5 -out=pslx
 -------------------------------------------------------
    blat : variable in path or the absolut path
   query : reads in fasta format

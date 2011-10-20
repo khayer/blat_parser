@@ -5,13 +5,8 @@ pkg/*
 # OS X filesystem file
 .DS_Store
 *.fa
-<<<<<<< HEAD
-*.fasta
-*_R1
-*_R2
-*.pslx
-=======
-*.rb
-.gitignore
-test3
->>>>>>> ?
+
+
+
+
+
